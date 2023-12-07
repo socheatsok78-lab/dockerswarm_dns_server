@@ -3,6 +3,9 @@ networks:
     name: dockerswarm_sd_network
     external: true
 
+volumes:
+  zones:
+
 services:
   dns_server:
     image: dockerswarm_dns_server:latest
@@ -21,6 +24,8 @@ services:
       - "53:53/udp"
     networks:
       - dockerswarm_sd_network
+    volumes:
+      - zones:/etc/bind/zones
     deploy:
       mode: global
       placement:
