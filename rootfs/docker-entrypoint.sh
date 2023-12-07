@@ -40,12 +40,12 @@ function named_config_loop() {
 	echo "Starting named.conf sync loop..."
 	while true; do
 		sleep 10
-		echo "Regenerating named.conf and related files from Service Discovery..."
+		echo "Regenerating configs and zones from Service Discovery..."
 		named_config
 	done
 }
 
-echo "Generating named.conf and related files..."
+echo "Generating configs and zones from Service Discovery..."
 named_config
 named_config_loop &
 
