@@ -13,7 +13,7 @@ $TTL 60			; 1 minute
 													)
 
 ; Cluster records
-{{ range $index, $swarm := (datasource "dockerswarm" ) -}}
+{{- range $index, $swarm := (datasource "dockerswarm" ) }}
 {{ $domain }}.	60	IN	A	{{ $swarm.Status.Addr }}
 
 {{- if eq $swarm.Spec.Role "manager" }}
@@ -22,14 +22,14 @@ $TTL 60			; 1 minute
 {{- end }}
 
 ; Nameserver
-{{ range $index, $swarm := (datasource "dockerswarm" ) -}}
+{{- range $index, $swarm := (datasource "dockerswarm" ) }}
 {{- if eq $swarm.Spec.Role "manager" }}
 ns{{ $index }}.{{ $domain }}.	60	IN	A	{{ .Status.Addr }}
 {{- end }}
 {{- end }}
 
 ; Docker Swarm's nodes
-{{ range (datasource "dockerswarm" ) -}}
+{{- range (datasource "dockerswarm" ) }}
 nodes.{{ $domain }}.			60	IN	A	{{ .Status.Addr }}
 {{ .ID }}.nodes.{{ $domain }}.	60	IN	A	{{ .Status.Addr }}
 {{- end }}
