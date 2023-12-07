@@ -39,7 +39,7 @@ nodes.{{ $domain }}.			60	IN	A	{{ .Status.Addr }}
 ;
 {{- range $service_idx, $service := (datasource "dockerservices" ) }}
 ; -------------------- SERVICE ID {{ $service.ID }} --------------------
-{{ $service.Spec.Name }}.{{ $domain }}.	60	IN	CNAME	{{ $service.ID }}.svc.{{ $domain }}.
+{{ $service.Spec.Name }}.{{ $domain }}.	60	IN	CNAME	{{ $service.ID }}.services.{{ $domain }}.
 
 {{- range $task_idx, $task := (datasource "dockertasks" ) }}
 {{- if and (eq $task.DesiredState "running") (eq $service.ID $task.ServiceID) (index $task "Slot") }}
@@ -57,7 +57,7 @@ nodes.{{ $domain }}.			60	IN	A	{{ .Status.Addr }}
 ; -------------------- TASK ID {{ .ID }} --------------------
 {{- range $node_idx, $node := (datasource "dockerswarm" ) }}
 {{- if eq $node.ID $task.NodeID }}
-{{ $task.ServiceID }}.svc.{{ $domain }}.	60	IN	A	{{ $node.Status.Addr }}
+{{ $task.ServiceID }}.services.{{ $domain }}.	60	IN	A	{{ $node.Status.Addr }}
 {{ $task.ID }}.tasks.{{ $domain }}.	60	IN	A	{{ $node.Status.Addr }}
 {{- end }}
 {{- end }}
