@@ -1,0 +1,46 @@
+{{- $config_path := getenv "CONFIG_PATH" "/etc/bind" -}}
+{{- $domain := getenv "CLUSTER_DOMAIN" "external" -}}
+
+// Logging
+logging {
+  channel stdout {
+      stderr;
+      severity info;
+      print-category no;
+      print-severity no;
+      print-time yes;
+  };
+  category security { stdout; };
+  category dnssec   { stdout; };
+  category default  { stdout; };
+  category queries  { stdout; };
+  category client { stdout; };
+  category config { stdout; };
+  category database { stdout; };
+  category default { stdout; };
+  category dispatch { stdout; };
+  category dnssec { stdout; };
+  category general { stdout; };
+  category lame-servers { stdout; };
+  category network { stdout; };
+  category notify { stdout; };
+  category queries { stdout; };
+  category resolver { stdout; };
+  category security { stdout; };
+  category unmatched { stdout; };
+  category update { stdout; };
+  category xfer-in { stdout; };
+  category xfer-out { stdout; };
+};
+
+//
+// !!! Please do no manually modify any content below !!!
+//     The content are automatically generated.
+//
+
+# ----- Generated configuration -----
+zone "docker.{{ $domain }}." in {
+    type primary;
+    file "{{ $config_path }}/docker/db.docker";
+};
+# ----- End of generated configuration -----

@@ -1,0 +1,28 @@
+networks:
+  dockerswarm_sd_network:
+    name: dockerswarm_sd_network
+    external: true
+
+services:
+  dns_server:
+    image: dockerswarm_dns_server:latest
+    hostname: dns_server
+    # ports:
+    #   - mode: host
+    #     target: 53
+    #     published: 53
+    #     protocol: tcp
+    #   - mode: host
+    #     target: 53
+    #     published: 53
+    #     protocol: udp
+    ports:
+      - "53:53/tcp"
+      - "53:53/udp"
+    networks:
+      - dockerswarm_sd_network
+    deploy:
+      mode: global
+      placement:
+        constraints:
+          - node.role == manager

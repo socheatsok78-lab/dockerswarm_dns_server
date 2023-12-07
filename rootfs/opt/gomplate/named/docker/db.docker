@@ -1,0 +1,64 @@
+{{- $serial := random.Number 1 99999 -}}
+{{- $domain := getenv "CLUSTER_DOMAIN" "external" -}}
+{{- $domain = print "docker." $domain -}}
+
+$ORIGIN {{ $domain }}.
+$TTL 60			; 1 minute
+{{ $domain }}.	IN	SOA	nameserver.{{ $domain }}.	hostmaster.{{ $domain }}. (
+														{{ $serial }}	; serial
+														60	; refresh (1 minute)
+														30	; retry (30 seconds)
+														60	; expire (1 minute)
+														30	; minimul (30 seconds)
+													)
+
+; Cluster records
+{{ range $index, $swarm := (datasource "dockerswarm" ) -}}
+{{ $domain }}.	60	IN	A	{{ $swarm.Status.Addr }}
+
+{{- if eq $swarm.Spec.Role "manager" }}
+{{ $domain }}.	60	IN	NS	ns{{ $index }}.{{ $domain }}.
+{{- end }}
+{{- end }}
+
+; Nameserver
+{{ range $index, $swarm := (datasource "dockerswarm" ) -}}
+{{- if eq $swarm.Spec.Role "manager" }}
+ns{{ $index }}.{{ $domain }}.	60	IN	A	{{ .Status.Addr }}
+{{- end }}
+{{- end }}
+
+; Docker Swarm's nodes
+{{ range (datasource "dockerswarm" ) -}}
+nodes.{{ $domain }}.			60	IN	A	{{ .Status.Addr }}
+{{ .ID }}.nodes.{{ $domain }}.	60	IN	A	{{ .Status.Addr }}
+{{- end }}
+
+;
+; Docker Swarm's services
+;
+{{- range (datasource "dockerservices" ) }}
+; -------------------- ID {{ .ID }} --------------------
+{{ .Spec.Name }}.{{ $domain }}.	60	IN	CNAME	{{ .ID }}.svc.{{ $domain }}.
+
+{{- if index .Spec.TaskTemplate.ContainerSpec "Hostname" }}
+{{.Spec.TaskTemplate.ContainerSpec.Hostname }}.{{ $domain }}.	60	IN	CNAME	{{ .ID }}.svc.{{ $domain }}.
+{{- end }}
+; ------------------ END ID {{ .ID }} ------------------
+{{ "" }}
+{{- end }}
+
+;
+; Docker Swarm's tasks
+;
+{{- range $task_idx, $task := (datasource "dockertasks" ) }}
+; -------------------- ID {{ .ID }} --------------------
+{{- range $node_idx, $node := (datasource "dockerswarm" ) }}
+{{- if eq $node.ID $task.NodeID }}
+{{ $task.ServiceID }}.svc.{{ $domain }}.	60	IN	A	{{ $node.Status.Addr }}
+{{ $task.ID }}.tasks.{{ $domain }}.	60	IN	A	{{ $node.Status.Addr }}
+{{- end }}
+{{- end }}
+; ------------------ END ID {{ .ID }} ------------------
+{{ "" }}
+{{- end }}
