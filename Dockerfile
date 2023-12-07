@@ -25,4 +25,8 @@ ENV OCTODNS_KEY_NAME=${OCTODNS_KEY_NAME}
 RUN rndc-confgen -a -k "${OCTODNS_KEY_NAME}" -c "/etc/bind/octodns.key" && \
     cat /etc/bind/octodns.key
 
+ENV DOCKERSWARM_SD_HOST=dockerswarm_sd_server:9093
+ENV DOCKERSWARM_SD_INTERVAL=15
+
+VOLUME [ "/etc/bind/zones" ]
 ENTRYPOINT [ "/docker-entrypoint.sh" ]

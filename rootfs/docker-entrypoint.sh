@@ -1,7 +1,8 @@
 #!/bin/bash
 set -e
 
-DOCKER_HOST=${DOCKER_HOST:-dockerswarm_sd_server:9093}
+DOCKERSWARM_SD_HOST=${DOCKERSWARM_SD_HOST:-dockerswarm_sd_server:9093}
+DOCKERSWARM_SD_INTERVAL=${DOCKERSWARM_SD_INTERVAL:-60}
 
 TEMPLATE_DIR="${TEMPLATE_DIR:-/opt/gomplate}"
 NAMED_CONFIG_DIR="${NAMED_CONFIG_DIR:-/etc/bind}"
@@ -9,10 +10,10 @@ NAMED_CONF_FILE="${NAMED_CONFIG_DIR}/named.conf"
 
 function gomplate_docker() {
 	gomplate \
-		--datasource dockerinfo=http://${DOCKER_HOST}/v1.41/info \
-		--datasource dockerswarm=http://${DOCKER_HOST}/v1.41/nodes \
-		--datasource dockerservices=http://${DOCKER_HOST}/v1.41/services \
-		--datasource dockertasks=http://${DOCKER_HOST}/v1.41/tasks \
+		--datasource dockerinfo=http://${DOCKERSWARM_SD_HOST}/v1.41/info \
+		--datasource dockerswarm=http://${DOCKERSWARM_SD_HOST}/v1.41/nodes \
+		--datasource dockerservices=http://${DOCKERSWARM_SD_HOST}/v1.41/services \
+		--datasource dockertasks=http://${DOCKERSWARM_SD_HOST}/v1.41/tasks \
 		"$@"
 }
 
@@ -39,7 +40,7 @@ function named_config() {
 function named_config_loop() {
 	echo "Starting named.conf sync loop..."
 	while true; do
-		sleep 10
+		sleep ${DOCKERSWARM_SD_INTERVAL}
 		echo "Regenerating configs and zones from Service Discovery..."
 		named_config
 	done
