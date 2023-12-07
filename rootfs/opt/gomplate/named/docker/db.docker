@@ -17,14 +17,7 @@ $TTL 60			; 1 minute
 {{ $domain }}.	60	IN	A	{{ $swarm.Status.Addr }}
 
 {{- if eq $swarm.Spec.Role "manager" }}
-{{ $domain }}.	60	IN	NS	ns{{ $index }}.{{ $domain }}.
-{{- end }}
-{{- end }}
-
-; Nameserver
-{{- range $index, $swarm := (datasource "dockerswarm" ) }}
-{{- if eq $swarm.Spec.Role "manager" }}
-ns{{ $index }}.{{ $domain }}.	60	IN	A	{{ .Status.Addr }}
+{{ $domain }}.	60	IN	NS	{{ $swarm.ID }}.nodes.{{ $domain }}.
 {{- end }}
 {{- end }}
 
