@@ -2,7 +2,7 @@
 {{- $domain := getenv "CLUSTER_DOMAIN" "external" -}}
 
 // octoDNS
-{{ print $config_path "/octodns.key" | file.Read }}
+{{ getenv "OCTODNS_KEY_FILE" | file.Read }}
 
 //
 // !!! Please do no manually modify any content below !!!

@@ -46,6 +46,15 @@ function named_config_loop() {
 	done
 }
 
+if [[ -z "${CLUSTERSYNC_KEY_FILE}" ]]; then
+	echo "The CLUSTERSYNC_KEY_FILE env is not set, using default..."
+	CLUSTERSYNC_KEY_FILE=${NAMED_CONFIG_DIR}/cluster-sync.key
+fi
+if [[ -z "${OCTODNS_KEY_FILE}" ]]; then
+	echo "The OCTODNS_KEY_FILE env is not set, using default..."
+	OCTODNS_KEY_FILE=${NAMED_CONFIG_DIR}/octodns.key
+fi
+
 echo "Generating configs and zones from Service Discovery..."
 named_config
 named_config_loop &
