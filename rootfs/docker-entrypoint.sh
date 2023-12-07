@@ -56,7 +56,7 @@ if [[ -z "${OCTODNS_KEY_FILE}" ]]; then
 fi
 
 # Main
-echo -n "Generating RNDC keys:"
+echo -n "Generating RNDC keys: "
 rndc-confgen -a
 
 echo "Generating configs and zones from Service Discovery..."
