@@ -10,8 +10,8 @@ ADD --chmod=755 https://github.com/hairyhenderson/gomplate/releases/download/${G
 ADD rootfs /
 
 # Create rndc key
-RUN rndc-confgen -a && \
-    cp /etc/bind/rndc.key /etc/rndc.key
+# This is not enabled by default, key will automatically be generated if not present during startup
+# RUN rndc-confgen -a
 
 # Create cluster-sync key
 ARG CLUSTERSYNC_KEY_NAME=cluster-sync

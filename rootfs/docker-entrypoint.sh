@@ -55,6 +55,10 @@ if [[ -z "${OCTODNS_KEY_FILE}" ]]; then
 	OCTODNS_KEY_FILE=${NAMED_CONFIG_DIR}/octodns.key
 fi
 
+# Main
+echo "Generating RNDC keys..."
+rndc-confgen -a
+
 echo "Generating configs and zones from Service Discovery..."
 named_config
 named_config_loop &
