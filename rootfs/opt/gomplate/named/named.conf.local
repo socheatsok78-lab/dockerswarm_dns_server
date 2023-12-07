@@ -1,6 +1,9 @@
 {{- $config_path := getenv "CONFIG_PATH" "/etc/bind" -}}
 {{- $domain := getenv "CLUSTER_DOMAIN" "external" -}}
 
+// octoDNS
+{{ print $config_path "/octodns.key" | file.Read }}
+
 //
 // !!! Please do no manually modify any content below !!!
 //     The content are automatically generated.
@@ -10,5 +13,8 @@
 zone "{{ $domain }}." in {
     type primary;
     file "{{ $config_path }}/zones/db.default";
+    notify explicit;
+    allow-transfer { key "{{ getenv "OCTODNS_KEY_NAME" }}"; };
+    allow-update { key "{{ getenv "OCTODNS_KEY_NAME" }}"; };
 };
 # ----- End of generated configuration -----
