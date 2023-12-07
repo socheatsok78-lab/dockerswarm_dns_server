@@ -3,6 +3,12 @@ networks:
     name: dockerswarm_sd_network
     external: true
 
+secrets:
+  cluster-sync.key:
+    file: secrets/cluster-sync.key
+  octodns.key:
+    file: secrets/octodns.key
+
 volumes:
   zones:
 
@@ -10,22 +16,25 @@ services:
   dns_server:
     image: dockerswarm_dns_server:latest
     hostname: dns_server
-    # ports:
-    #   - mode: host
-    #     target: 53
-    #     published: 53
-    #     protocol: tcp
-    #   - mode: host
-    #     target: 53
-    #     published: 53
-    #     protocol: udp
+    environment:
+      - CLUSTERSYNC_KEY_FILE=/run/secrets/cluster-sync.key
+      - OCTODNS_KEY_FILE=/run/secrets/octodns.key
     ports:
-      - "53:53/tcp"
-      - "53:53/udp"
+      - mode: host
+        target: 53
+        published: 53
+        protocol: tcp
+      - mode: host
+        target: 53
+        published: 53
+        protocol: udp
     networks:
       - dockerswarm_sd_network
     volumes:
       - zones:/etc/bind/zones
+    secrets:
+      - cluster-sync.key
+      - octodns.key
     deploy:
       mode: global
       placement:
