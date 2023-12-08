@@ -14,7 +14,7 @@ volumes:
 
 services:
   dns_server:
-    image: dockerswarm_dns_server:latest
+    image: socheatsok78/dockerswarm_dns_server:latest
     hostname: dns_server
     environment:
       - CLUSTERSYNC_KEY_FILE=/run/secrets/cluster-sync.key
