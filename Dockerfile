@@ -29,6 +29,7 @@ ENV DOCKERSWARM_SD_HOST=dockerswarm_sd_server:9093
 ENV DOCKERSWARM_SD_INTERVAL=15
 ENV CLUSTERSYNC_KEY_FILE=
 ENV OCTODNS_KEY_FILE=
+ENV CLUSTER_DOMAIN=cluster.local
 
 VOLUME [ "/etc/bind/zones" ]
 ENTRYPOINT [ "/docker-entrypoint.sh" ]
