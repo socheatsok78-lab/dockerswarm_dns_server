@@ -14,9 +14,10 @@ volumes:
 
 services:
   dns_server:
-    image: socheatsok78/dockerswarm_dns_server:latest
+    image: socheatsok78/dockerswarm_dns_server:main
     hostname: dns_server
     environment:
+      - CLUSTER_DOMAIN=${CLUSTER_DOMAIN?A FQDN is required}
       - CLUSTERSYNC_KEY_FILE=/run/secrets/cluster-sync.key
       - OCTODNS_KEY_FILE=/run/secrets/octodns.key
     ports:
